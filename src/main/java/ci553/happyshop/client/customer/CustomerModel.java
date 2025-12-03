@@ -76,7 +76,7 @@ public class CustomerModel {
             makeOrganisedTrolley();
 
             //trolley.add(theProduct); // original code provided
-            displayTaTrolley = ProductListFormatter.buildString(trolley); //build a String for trolley so that we can show it
+            displayTaTrolley = ProductListFormatter.buildString(trolley); // build a String for trolley so that we can show it
         }
         else{
             displayLaSearchResult = "Please search for an available product before adding it to the trolley";
