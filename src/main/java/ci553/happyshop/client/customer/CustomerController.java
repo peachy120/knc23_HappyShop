@@ -11,11 +11,23 @@ public class CustomerController {
             case "Search":
                 cusModel.search();
                 break;
+            case "More Info":
+                cusModel.checkInfo();
+                break;
+            case "My History":
+                showHistory();
+                break;
+            case "Add to Wish List":
+                cusModel.addToWishList();
+                break;
             case "Add to Trolley":
                 cusModel.addToTrolley();
                 break;
-            case "Cancel":
-                cusModel.cancel();
+            case "Cancel Trolley":
+                cusModel.trolleyCancel();
+                break;
+            case "Cancel Wish List":
+                cusModel.wishListCancel();
                 break;
             case "Check Out":
                 cusModel.checkOut();
@@ -24,6 +36,10 @@ public class CustomerController {
                 cusModel.closeReceipt();
                 break;
         }
+    }
+
+    public void showHistory() {
+
     }
 
 }
