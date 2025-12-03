@@ -64,7 +64,7 @@ public class CustomerModel {
     }
 
     void addToTrolley(){
-        System.out.println("Add product to trolley is called from CustomerController");
+        System.out.println("Add product to trolley is called from CustomerController"); // debugging comment
         if(theProduct!= null){
 
             // trolley.add(theProduct) — Product is appended to the end of the trolley.
