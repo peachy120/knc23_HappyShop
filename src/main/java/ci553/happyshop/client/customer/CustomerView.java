@@ -371,7 +371,7 @@ public class CustomerView  {
         try{
             Button btn = (Button)event.getSource();
             String action = btn.getText();
-            if(action.equals("More Information") && obrLvProducts.getSelectionModel().getSelectedItem()!=null) {
+            if(action.equals("More Info") && obrLvProducts.getSelectionModel().getSelectedItem()!=null) {
                 showPage(vbInfoPage);
             }
             if(action.equals("My Wish List")) {
