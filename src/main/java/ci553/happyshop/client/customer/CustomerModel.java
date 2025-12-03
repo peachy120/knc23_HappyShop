@@ -75,7 +75,7 @@ public class CustomerModel {
 
             makeOrganisedTrolley();
 
-            //trolley.add(theProduct);// original code provided
+            //trolley.add(theProduct); // original code provided
             displayTaTrolley = ProductListFormatter.buildString(trolley); //build a String for trolley so that we can show it
         }
         else{
