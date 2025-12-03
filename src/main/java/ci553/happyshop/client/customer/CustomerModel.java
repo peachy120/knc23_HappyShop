@@ -26,45 +26,110 @@ public class CustomerModel {
     public DatabaseRW databaseRW; //Interface type, not specific implementation
                                   //Benefits: Flexibility: Easily change the database implementation.
 
+    private enum UpdateForAction {
+        BtnSearch
+    }
+
     private Product theProduct =null; // product found from search
+    private ArrayList<Product> productList = new ArrayList<>();
     private ArrayList<Product> trolley =  new ArrayList<>(); // a list of products in trolley
+    private ArrayList<Product> wishList = new ArrayList<>();
 
     // Four UI elements to be passed to CustomerView for display updates.
     private String imageName = "imageHolder.jpg";                // Image to show in product preview (Search Page)
     private String displayLaSearchResult = "No Product was searched yet"; // Label showing search result message (Search Page)
+    private String displayTaInfo = "";
+    private String displayTaWishList = "";
     private String displayTaTrolley = "";                                // Text area content showing current trolley items (Trolley Page)
     private String displayTaReceipt = "";                                // Text area content showing receipt after checkout (Receipt Page)
 
     //SELECT productID, description, image, unitPrice,inStock quantity
     void search() throws SQLException {
-        String productId = cusView.tfId.getText().trim();
-        if(!productId.isEmpty()){
-            theProduct = databaseRW.searchByProductId(productId); //search database
-            if(theProduct != null && theProduct.getStockQuantity()>0){
-                double unitPrice = theProduct.getUnitPrice();
-                String description = theProduct.getProductDescription();
-                int stock = theProduct.getStockQuantity();
+        String productItem = cusView.tfSearch.getText().trim();
+        if (!productItem.equals("")) {
+            productList = databaseRW.searchProduct(productItem); //search database
+            if(productList != null ) {
+                theProduct = productList.get(0);
+                if (theProduct.getStockQuantity()>0){
+                    double unitPrice = theProduct.getUnitPrice();
+                    String description = theProduct.getProductDescription();
+                    int stock = theProduct.getStockQuantity();
 
-                String baseInfo = String.format("Product_Id: %s\n%s,\nPrice: £%.2f", productId, description, unitPrice);
-                String quantityInfo = stock < 100 ? String.format("\n%d units left.", stock) : "";
-                displayLaSearchResult = baseInfo + quantityInfo;
-                System.out.println(displayLaSearchResult);
-            }
-            else{
+                    String baseInfo = String.format("Product_Id / Name: %s\n%s,\nPrice: £%.2f", productItem, description, unitPrice);
+                    String quantityInfo = stock < 100 ? String.format("\n%d units left.", stock) : "";
+                    displayLaSearchResult = baseInfo + quantityInfo;
+                    System.out.println(displayLaSearchResult);
+                }
+            }else{
                 theProduct=null;
-                displayLaSearchResult = "No Product was found with ID " + productId;
-                System.out.println("No Product was found with ID " + productId);
+                displayLaSearchResult = "No Product was found with " + productItem;
+                System.out.println("No Product was found with " + productItem);
             }
         }else{
             theProduct=null;
-            displayLaSearchResult = "Please type ProductID";
-            System.out.println("Please type ProductID.");
+            displayLaSearchResult = "Please type the product you would like to search for";
+            System.out.println("Please type the product you would like to search for");
+        }
+        updateObservableProductList(UpdateForAction.BtnSearch);
+    }
+
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
+
+    void checkInfo() {
+        theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
+        if(theProduct!= null) {
+            double unitPrice = theProduct.getUnitPrice();
+            String description = theProduct.getProductDescription();
+            int stock = theProduct.getStockQuantity();
+
+            String baseInfo = String.format("Product_Id / Name: %s\n%s,\nPrice: £%.2f", theProduct, description, unitPrice);
+            String quantityInfo = stock < 100 ? String.format("\n%d units left.", stock) : "";
+            displayTaInfo = baseInfo + quantityInfo;
+            System.out.println(displayLaSearchResult);
         }
         updateView();
     }
 
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
+
+    void addToWishList() {
+        System.out.println("Add product to wishList is called from CustomerController"); // debugging comment
+        theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
+        if(theProduct!= null){
+
+            makeOrganisedWishList();
+
+            displayTaWishList = ProductListFormatter.buildString(wishList); // build a String for trolley so that we can show it
+        }
+        else{
+            displayLaSearchResult = "Please search for an available product before adding it to the wish list";
+            System.out.println("must search and get an available product before add to wish list");
+        }
+        displayTaReceipt="";
+        updateView();
+    }
+
+    void makeOrganisedWishList() {
+        for ( Product product : wishList) {
+            if ( product.getProductId().equals(theProduct.getProductId())) {
+                product.setOrderedQuantity(product.getOrderedQuantity() + theProduct.getOrderedQuantity());
+                return;
+            }
+        }
+        Product newProduct = new Product(theProduct.getProductId(),
+                                        theProduct.getProductDescription(),
+                                        theProduct.getProductImageName(),
+                                        theProduct.getUnitPrice(),
+                                        theProduct.getStockQuantity());
+        wishList.add(newProduct);
+        wishList.sort(Comparator.comparing(Product::getProductId));
+    }
+
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
+
     void addToTrolley(){
         System.out.println("Add product to trolley is called from CustomerController"); // debugging comment
+        theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
         if(theProduct!= null){
 
             // trolley.add(theProduct) — Product is appended to the end of the trolley.
@@ -101,6 +166,8 @@ public class CustomerModel {
         trolley.add(newProduct);
         trolley.sort(Comparator.comparing(Product::getProductId)); // organised trolley : sorting items by productID
     }
+
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
 
     void checkOut() throws IOException, SQLException {
         if(!trolley.isEmpty()){
@@ -153,6 +220,8 @@ public class CustomerModel {
         updateView();
     }
 
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
+
     /**
      * Groups products by their productId to optimize database queries and updates.
      * By grouping products, we can check the stock for a given `productId` once, rather than repeatedly
@@ -173,16 +242,31 @@ public class CustomerModel {
         return new ArrayList<>(grouped.values());
     }
 
-    void cancel(){
+    void trolleyCancel(){
         trolley.clear();
         displayTaTrolley="";
+        updateView();
+    }
+
+    void wishListCancel() {
+        wishList.clear();
+        displayTaWishList = "";
         updateView();
     }
     void closeReceipt(){
         displayTaReceipt="";
     }
 
+    private void updateObservableProductList(UpdateForAction updateFor) {
+        switch (updateFor) {
+            case UpdateForAction.BtnSearch:
+                cusView.updateObservableProductList(productList);
+                break;
+        }
+    }
+
     void updateView() {
+        theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
         if(theProduct != null){
             imageName = theProduct.getProductImageName();
             String relativeImageUrl = StorageLocation.imageFolder +imageName; //relative file path, eg images/0001.jpg
@@ -194,7 +278,7 @@ public class CustomerModel {
         else{
             imageName = "imageHolder.jpg";
         }
-        cusView.update(imageName, displayLaSearchResult, displayTaTrolley,displayTaReceipt);
+        cusView.update(displayTaInfo, displayTaWishList, displayTaTrolley,displayTaReceipt);
     }
      // extra notes:
      //Path.toUri(): Converts a Path object (a file or a directory path) to a URI object.
@@ -204,4 +288,5 @@ public class CustomerModel {
     public ArrayList<Product> getTrolley() {
         return trolley;
     }
+    public ArrayList<Product> getWishList() { return wishList;}
 }

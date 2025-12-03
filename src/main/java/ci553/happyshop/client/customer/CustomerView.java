@@ -1,8 +1,12 @@
 package ci553.happyshop.client.customer;
 
+import ci553.happyshop.catalogue.Product;
+import ci553.happyshop.utility.StorageLocation;
 import ci553.happyshop.utility.UIStyle;
 import ci553.happyshop.utility.WinPosManager;
 import ci553.happyshop.utility.WindowBounds;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -14,9 +18,13 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
+import jdk.incubator.vector.VectorOperators;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * The CustomerView is separated into two sections by a line :
@@ -34,25 +42,43 @@ public class CustomerView  {
     private final int COLUMN_WIDTH = WIDTH / 2 - 10;
 
     private HBox hbRoot; // Top-level layout manager
+    private VBox vbRoot;
+    private HBox hbMenuPage;
+    private VBox vbInfoPage;
+    private VBox vbWishListPage;
     private VBox vbTrolleyPage;  //vbTrolleyPage and vbReceiptPage will swap with each other when need
+    private VBox vbHistoryPage;
     private VBox vbReceiptPage;
 
-    TextField tfId; //for user input on the search page. Made accessible so it can be accessed or modified by CustomerModel
-    TextField tfName; //for user input on the search page. Made accessible so it can be accessed by CustomerModel
+    TextField tfSearch; //for user input on the search page. Made accessible so it can be accessed or modified by CustomerModel
+    TextField tfName; //original code provided
+
+    public Label laSearchSummary;
+    public ObservableList<Product> obeProductList;
+    ListView<Product> obrLvProducts;
 
     //four controllers needs updating when program going on
-    private ImageView ivProduct; //image area in searchPage
-    private Label lbProductInfo;//product text info in searchPage
+    private ImageView ivProduct; //image area in searchPage ++ original code provided
+    private Label lbProductInfo;//product text info in searchPage ++ original code provided
+    private TextArea taInfo;
+    private TextArea taWishList;
     private TextArea taTrolley; //in trolley Page
+    private TextArea taHistory;
     private TextArea taReceipt;//in receipt page
 
     // Holds a reference to this CustomerView window for future access and management
     // (e.g., positioning the removeProductNotifier when needed).
     private Stage viewWindow;
 
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
+
     public void start(Stage window) {
         VBox vbSearchPage = createSearchPage();
+        hbMenuPage = createMenuPage();
+        vbInfoPage = CreateInfoPage();
+        vbWishListPage = CreateWishListPage();
         vbTrolleyPage = CreateTrolleyPage();
+        vbHistoryPage = CreateHistoryPage();
         vbReceiptPage = createReceiptPage();
 
         // Create a divider line
@@ -63,59 +89,135 @@ public class CustomerView  {
         lineContainer.setPrefWidth(4); // Give it some space
         lineContainer.setAlignment(Pos.CENTER);
 
-        hbRoot = new HBox(10, vbSearchPage, lineContainer, vbTrolleyPage); //initialize to show trolleyPage
+        hbRoot = new HBox(10, vbSearchPage, lineContainer, vbInfoPage); //initialize to show trolleyPage
         hbRoot.setAlignment(Pos.CENTER);
         hbRoot.setStyle(UIStyle.rootStyle);
 
-        Scene scene = new Scene(hbRoot, WIDTH, HEIGHT);
+        vbRoot = new VBox(10,hbMenuPage, hbRoot);
+        vbRoot.setAlignment(Pos.CENTER);
+        vbRoot.setStyle(UIStyle.rootStyle);
+
+        Scene scene = new Scene(vbRoot, WIDTH, HEIGHT);
         window.setScene(scene);
         window.setTitle("🛒 HappyShop Customer Client");
         WinPosManager.registerWindow(window,WIDTH,HEIGHT); //calculate position x and y for this window
         window.show();
         viewWindow=window;// Sets viewWindow to this window for future reference and management.
     }
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
+
+    private HBox createMenuPage() {
+        Label laShopName = new Label("HappyShop");
+        laShopName.setStyle(UIStyle.labelTitleStyle);
+
+        Button btnWishList = new Button("My Wish List");
+        btnWishList.setStyle(UIStyle.buttonStyle);
+        btnWishList.setOnAction(this::buttonClicked);
+
+        Button btnTrolley = new Button("My Trolley");
+        btnTrolley.setStyle(UIStyle.buttonStyle);
+        btnTrolley.setOnAction(this::buttonClicked);
+
+        Button btnHistory = new Button("My History");
+        btnHistory.setStyle(UIStyle.buttonStyle);
+        btnHistory.setOnAction(this::buttonClicked);
+
+        Button btnLogOut = new Button("Log Out");
+        btnLogOut.setStyle(UIStyle.buttonStyle);
+        btnLogOut.setOnAction(this::buttonClicked);
+
+        HBox hbMenuPage = new HBox(10, laShopName, btnWishList, btnTrolley, btnHistory, btnLogOut);
+        hbMenuPage.setPrefWidth(COLUMN_WIDTH);
+        hbMenuPage.setAlignment(Pos.CENTER);
+        hbMenuPage.setStyle("-fx-padding: 15px;");
+
+        return hbMenuPage;
+    }
+
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
 
     private VBox createSearchPage() {
-        Label laPageTitle = new Label("Search by Product ID/Name");
+        Label laPageTitle = new Label("Search by Product ID / Name");
         laPageTitle.setStyle(UIStyle.labelTitleStyle);
 
-        Label laId = new Label("ID:      ");
-        laId.setStyle(UIStyle.labelStyle);
-        tfId = new TextField();
-        tfId.setPromptText("eg. 0001");
-        tfId.setStyle(UIStyle.textFiledStyle);
-        HBox hbId = new HBox(10, laId, tfId);
+        //--------------------------------------------------------------------------------------------------------------
 
-        Label laName = new Label("Name:");
-        laName.setStyle(UIStyle.labelStyle);
-        tfName = new TextField();
-        tfName.setPromptText("implement it if you want");
-        tfName.setStyle(UIStyle.textFiledStyle);
-        HBox hbName = new HBox(10, laName, tfName);
+        Label laSearch = new Label("ID / Name:");
+        laSearch.setStyle(UIStyle.labelStyle);
 
-        Label laPlaceHolder = new Label(  " ".repeat(15)); //create left-side spacing so that this HBox aligns with others in the layout.
+        tfSearch = new TextField();
+        tfSearch.setPromptText("eg. 0001 / TV");
+        tfSearch.setStyle(UIStyle.textFiledStyle);
+
         Button btnSearch = new Button("Search");
         btnSearch.setStyle(UIStyle.buttonStyle);
         btnSearch.setOnAction(this::buttonClicked);
+
+        HBox hbSearch = new HBox(10, laSearch, tfSearch, btnSearch);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        laSearchSummary = new Label("Search Result");
+        laSearchSummary.setStyle(UIStyle.labelStyle);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        obeProductList = FXCollections.observableArrayList();
+        obrLvProducts = new ListView<>(obeProductList);//ListView proListView observes proList
+        obrLvProducts.setPrefHeight(HEIGHT - 100);
+        obrLvProducts.setFixedCellSize(50);
+        obrLvProducts.setStyle(UIStyle.listViewStyle);
+
+        obrLvProducts.setCellFactory(param -> new ListCell<Product>() {
+            @Override
+            protected void updateItem(Product product, boolean empty) {
+                super.updateItem(product, empty);
+
+                if (empty || product == null) {
+                    setGraphic(null);
+                    System.out.println("setCellFactory - empty item");
+                } else {
+                    String imageName = product.getProductImageName(); // Get image name (e.g. "0001.jpg")
+                    String relativeImageUrl = StorageLocation.imageFolder + imageName;
+                    // Get the full absolute path to the image
+                    Path imageFullPath = Paths.get(relativeImageUrl).toAbsolutePath();
+                    String imageFullUri = imageFullPath.toUri().toString();// Build the full image Uri
+
+                    ImageView ivPro;
+                    try {
+                        ivPro = new ImageView(new Image(imageFullUri, 50,45, true,true)); // Attempt to load the product image
+                    } catch (Exception e) {
+                        // If loading fails, use a default image directly from the resources folder
+                        ivPro = new ImageView(new Image("imageHolder.jpg",50,45,true,true)); // Directly load from resources
+                    }
+
+                    Label laProToString = new Label(product.toString()); // Create a label for product details
+                    HBox hbox = new HBox(10, ivPro, laProToString); // Put ImageView and label in a horizontal layout
+                    setGraphic(hbox);  // Set the whole row content
+                }
+            }
+        });
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Button btnMoreInfo = new Button("More Info");
+        btnMoreInfo.setStyle(UIStyle.buttonStyle);
+        btnMoreInfo.setOnAction(this::buttonClicked);
+
+        Button btnAddToWishList = new Button("Add to Wish List");
+        btnAddToWishList.setStyle(UIStyle.buttonStyle);
+        btnAddToWishList.setOnAction(this::buttonClicked);
+
         Button btnAddToTrolley = new Button("Add to Trolley");
         btnAddToTrolley.setStyle(UIStyle.buttonStyle);
         btnAddToTrolley.setOnAction(this::buttonClicked);
-        HBox hbBtns = new HBox(10, laPlaceHolder,btnSearch, btnAddToTrolley);
 
-        ivProduct = new ImageView("imageHolder.jpg");
-        ivProduct.setFitHeight(60);
-        ivProduct.setFitWidth(60);
-        ivProduct.setPreserveRatio(true); // Image keeps its original shape and fits inside 60×60
-        ivProduct.setSmooth(true); //make it smooth and nice-looking
+        HBox hbBtns = new HBox(10, btnMoreInfo, btnAddToWishList, btnAddToTrolley);
 
-        lbProductInfo = new Label("Thank you for shopping with us.");
-        lbProductInfo.setWrapText(true);
-        lbProductInfo.setMinHeight(Label.USE_PREF_SIZE);  // Allow auto-resize
-        lbProductInfo.setStyle(UIStyle.labelMulLineStyle);
-        HBox hbSearchResult = new HBox(5, ivProduct, lbProductInfo);
-        hbSearchResult.setAlignment(Pos.CENTER_LEFT);
 
-        VBox vbSearchPage = new VBox(15, laPageTitle, hbId, hbName, hbBtns, hbSearchResult);
+        //--------------------------------------------------------------------------------------------------------------
+
+        VBox vbSearchPage = new VBox(15, laPageTitle, hbSearch, laSearchSummary, obrLvProducts, hbBtns);
         vbSearchPage.setPrefWidth(COLUMN_WIDTH);
         vbSearchPage.setAlignment(Pos.TOP_CENTER);
         vbSearchPage.setStyle("-fx-padding: 15px;");
@@ -123,15 +225,77 @@ public class CustomerView  {
         return vbSearchPage;
     }
 
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
+
+    private VBox CreateInfoPage() {
+        Label laPageTitle = new Label("Product information detailed version");
+        laPageTitle.setStyle(UIStyle.labelTitleStyle);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        taInfo = new TextArea();
+        taInfo.setEditable(false);
+        taInfo.setPrefSize(WIDTH/2, HEIGHT-50);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        vbInfoPage = new VBox(15, laPageTitle, taInfo);
+        vbInfoPage.setPrefWidth(COLUMN_WIDTH);
+        vbInfoPage.setAlignment(Pos.TOP_CENTER);
+        vbInfoPage.setStyle("-fx-padding: 15px;");
+
+        return vbInfoPage;
+    }
+
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
+
+    private VBox CreateWishListPage() {
+        Label laPageTitle = new Label("Wish List");
+        laPageTitle.setStyle(UIStyle.labelTitleStyle);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        taWishList = new TextArea();
+        taWishList.setEditable(false);
+        taWishList.setPrefSize(WIDTH/2, HEIGHT-50);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Button btnCancel = new Button("Cancel Wish List");
+        btnCancel.setOnAction(this::buttonClicked);
+        btnCancel.setStyle(UIStyle.buttonStyle);
+
+        Button btnAddToTrolley = new Button("Add ALL to Trolley");
+        btnAddToTrolley.setOnAction(this::buttonClicked);
+        btnAddToTrolley.setStyle(UIStyle.buttonStyle);
+
+        HBox hbBtns = new HBox(10, btnCancel, btnAddToTrolley);
+        hbBtns.setStyle("-fx-padding: 15px;");
+        hbBtns.setAlignment(Pos.CENTER);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        vbWishListPage = new VBox(15, laPageTitle, taWishList, hbBtns);
+        vbWishListPage.setPrefWidth(COLUMN_WIDTH);
+        vbWishListPage.setAlignment(Pos.TOP_CENTER);
+        vbWishListPage.setStyle("-fx-padding: 15px;");
+
+        return vbWishListPage;
+    }
+
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
+
     private VBox CreateTrolleyPage() {
         Label laPageTitle = new Label("🛒🛒  Trolley 🛒🛒");
         laPageTitle.setStyle(UIStyle.labelTitleStyle);
+
+        //--------------------------------------------------------------------------------------------------------------
 
         taTrolley = new TextArea();
         taTrolley.setEditable(false);
         taTrolley.setPrefSize(WIDTH/2, HEIGHT-50);
 
-        Button btnCancel = new Button("Cancel");
+        Button btnCancel = new Button("Cancel Trolley");
         btnCancel.setOnAction(this::buttonClicked);
         btnCancel.setStyle(UIStyle.buttonStyle);
 
@@ -143,12 +307,39 @@ public class CustomerView  {
         hbBtns.setStyle("-fx-padding: 15px;");
         hbBtns.setAlignment(Pos.CENTER);
 
+        //--------------------------------------------------------------------------------------------------------------
+
         vbTrolleyPage = new VBox(15, laPageTitle, taTrolley, hbBtns);
         vbTrolleyPage.setPrefWidth(COLUMN_WIDTH);
         vbTrolleyPage.setAlignment(Pos.TOP_CENTER);
         vbTrolleyPage.setStyle("-fx-padding: 15px;");
+
         return vbTrolleyPage;
     }
+
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
+
+    private VBox CreateHistoryPage() {
+        Label laPageTitle = new Label("History");
+        laPageTitle.setStyle(UIStyle.labelTitleStyle);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        taHistory = new TextArea();
+        taHistory.setEditable(false);
+        taHistory.setPrefSize(WIDTH/2, HEIGHT-50);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        vbHistoryPage = new VBox(15, laPageTitle, taHistory);
+        vbHistoryPage.setPrefWidth(COLUMN_WIDTH);
+        vbHistoryPage.setAlignment(Pos.TOP_CENTER);
+        vbHistoryPage.setStyle("-fx-padding: 15px;");
+
+        return vbHistoryPage;
+    }
+
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
 
     private VBox createReceiptPage() {
         Label laPageTitle = new Label("Receipt");
@@ -163,23 +354,43 @@ public class CustomerView  {
 
         btnCloseReceipt.setOnAction(this::buttonClicked);
 
+        //--------------------------------------------------------------------------------------------------------------
+
         vbReceiptPage = new VBox(15, laPageTitle, taReceipt, btnCloseReceipt);
         vbReceiptPage.setPrefWidth(COLUMN_WIDTH);
         vbReceiptPage.setAlignment(Pos.TOP_CENTER);
         vbReceiptPage.setStyle(UIStyle.rootStyleYellow);
+
         return vbReceiptPage;
     }
+
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
 
 
     private void buttonClicked(ActionEvent event) {
         try{
             Button btn = (Button)event.getSource();
             String action = btn.getText();
-            if(action.equals("Add to Trolley")){
-                showTrolleyOrReceiptPage(vbTrolleyPage); //ensure trolleyPage shows if the last customer did not close their receiptPage
+            if(action.equals("More Info") && obrLvProducts.getSelectionModel().getSelectedItem()!=null) {
+                showPage(vbInfoPage);
+            }
+            if(action.equals("My Wish List")) {
+                showPage(vbWishListPage);
+            }
+            if(action.equals("My Trolley")) {
+                showPage(vbTrolleyPage);
+            }
+            if(action.equals("My History")) {
+                showPage(vbHistoryPage);
+            }
+            if(action.equals("Add to Wish List") && obrLvProducts.getSelectionModel().getSelectedItem()!=null) {
+                showPage(vbWishListPage);
+            }
+            if(action.equals("Add to Trolley") && obrLvProducts.getSelectionModel().getSelectedItem()!=null){
+                showPage(vbTrolleyPage); //ensure trolleyPage shows if the last customer did not close their receiptPage
             }
             if(action.equals("OK & Close")){
-                showTrolleyOrReceiptPage(vbTrolleyPage);
+                showPage(vbInfoPage);
             }
             cusController.doAction(action);
         }
@@ -190,29 +401,45 @@ public class CustomerView  {
         }
     }
 
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
 
-    public void update(String imageName, String searchResult, String trolley, String receipt) {
+    public void update(String info, String wishList, String trolley, String receipt) {
 
-        ivProduct.setImage(new Image(imageName));
-        lbProductInfo.setText(searchResult);
+        taInfo.setText(info);
+        taWishList.setText(wishList);
         taTrolley.setText(trolley);
         if (!receipt.equals("")) {
-            showTrolleyOrReceiptPage(vbReceiptPage);
+            showPage(vbReceiptPage);
             taReceipt.setText(receipt);
         }
     }
 
-    // Replaces the last child of hbRoot with the specified page.
-    // the last child is either vbTrolleyPage or vbReceiptPage.
-    private void showTrolleyOrReceiptPage(Node pageToShow) {
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
+
+    void updateObservableProductList( ArrayList<Product> productList) {
+        int proCounter = productList.size();
+        System.out.println(proCounter);
+        laSearchSummary.setText(proCounter + " products found");
+        laSearchSummary.setVisible(true);
+        obeProductList.clear();
+        obeProductList.addAll(productList);
+    }
+
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
+
+    private void showPage(Node pageToShow) {
         int lastIndex = hbRoot.getChildren().size() - 1;
         if (lastIndex >= 0) {
             hbRoot.getChildren().set(lastIndex, pageToShow);
         }
     }
 
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
+
     WindowBounds getWindowBounds() {
         return new WindowBounds(viewWindow.getX(), viewWindow.getY(),
                   viewWindow.getWidth(), viewWindow.getHeight());
     }
 }
+
+/// --------------------------------------------------------------------------------------------------------------------------------------------------
