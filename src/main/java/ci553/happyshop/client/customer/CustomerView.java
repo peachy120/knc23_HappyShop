@@ -43,6 +43,8 @@ public class CustomerView  {
 
     private HBox hbRoot; // Top-level layout manager
     private VBox vbRoot;
+    public VBox vbLoginPage = new VBox();
+    private VBox vbCreateAccPage;
     private HBox hbMenuPage;
     private VBox vbInfoPage;
     private VBox vbWishListPage;
@@ -66,6 +68,15 @@ public class CustomerView  {
     private TextArea taHistory;
     private TextArea taReceipt;//in receipt page
 
+    TextField tfAccID = new TextField();
+    PasswordField pfAccPwd = new PasswordField();
+    Label laLoginMsg = new Label();
+
+    TextField tfCreateAccID, tfCreateAccUserFN,  tfCreateAccUserLN, tfCreateAccEmail;
+    PasswordField pfCreateAccPwd, pfCreateAccPwd2;
+    DatePicker dpCreateAccBDay;
+    TextArea taCreateAccMsg;
+
     // Holds a reference to this CustomerView window for future access and management
     // (e.g., positioning the removeProductNotifier when needed).
     private Stage viewWindow;
@@ -73,6 +84,8 @@ public class CustomerView  {
     /// --------------------------------------------------------------------------------------------------------------------------------------------------
 
     public void start(Stage window) {
+        vbLoginPage = CreateLoginPage();
+        vbCreateAccPage = CreateAccountPage();
         VBox vbSearchPage = createSearchPage();
         hbMenuPage = createMenuPage();
         vbInfoPage = CreateInfoPage();
@@ -97,13 +110,179 @@ public class CustomerView  {
         vbRoot.setAlignment(Pos.CENTER);
         vbRoot.setStyle(UIStyle.rootStyle);
 
-        Scene scene = new Scene(vbRoot, WIDTH, HEIGHT);
-        window.setScene(scene);
+        Scene scene = new Scene(vbLoginPage, WIDTH, HEIGHT);
         window.setTitle("🛒 HappyShop Customer Client");
         WinPosManager.registerWindow(window,WIDTH,HEIGHT); //calculate position x and y for this window
+        window.setScene(scene);
         window.show();
         viewWindow=window;// Sets viewWindow to this window for future reference and management.
+//        viewWindow.setTitle("🛒 HappyShop Customer Client");
+//        WinPosManager.registerWindow(viewWindow,WIDTH,HEIGHT); //calculate position x and y for this window
+//        viewWindow.setScene(scene);
+//        viewWindow.show();
     }
+
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    private VBox CreateLoginPage() {
+        Label laWelcome = new Label("Welcome to HappyShop");
+        laWelcome.setStyle(UIStyle.labelTitleStyle);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laDescription = new Label("Login to start searching products");
+        laDescription.setStyle(UIStyle.labelTitleStyle);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laAccID = new Label("Account ID :");
+        laAccID.setStyle(UIStyle.labelStyle);
+
+        tfAccID = new TextField();
+
+        HBox hbAccID = new HBox(10,laAccID, tfAccID);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laAccPwd = new Label("Password :");
+        laAccPwd.setStyle(UIStyle.labelStyle);
+
+        pfAccPwd = new PasswordField();
+
+        HBox hbAccPwd = new HBox(10,laAccPwd,pfAccPwd);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Button btnLogin = new Button("LOGIN");
+        btnLogin.setStyle(UIStyle.buttonStyle);
+        btnLogin.setOnAction(e -> cusController.login(tfAccID.getText(), pfAccPwd.getText()));
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        laLoginMsg = new Label("");
+        laLoginMsg.setStyle(UIStyle.labelStyle);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laCreateAcc = new Label("Don't have an Account?");
+        laCreateAcc.setStyle(UIStyle.labelStyle);
+
+        Button btnCreateAcc = new Button("Create Account");
+        btnCreateAcc.setStyle(UIStyle.buttonStyle);
+        btnCreateAcc.setOnAction(this::buttonClicked);
+
+        HBox hbCreateAcc = new HBox(10, laCreateAcc, btnCreateAcc);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        vbLoginPage = new VBox(10, laWelcome, laDescription, hbAccID, hbAccPwd, btnLogin, laLoginMsg, hbCreateAcc);
+        vbLoginPage.setPrefWidth(COLUMN_WIDTH);
+        vbLoginPage.setAlignment(Pos.CENTER);
+        vbLoginPage.setStyle("-fx-padding: 15px;");
+
+        return vbLoginPage;
+    }
+
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    private VBox CreateAccountPage() {
+        Label laDescription = new Label("Create a Account,Fill in the following");
+        laDescription.setStyle(UIStyle.labelStyle);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laCreateAccUserFN = new Label("FIRST NAME:");
+        laCreateAccUserFN.setStyle(UIStyle.labelStyle);
+
+        tfCreateAccUserFN = new TextField();
+
+        HBox hbNewAccFN = new HBox(10,laCreateAccUserFN, tfCreateAccUserFN);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laCreatewAccUserLN = new Label("LAST NAME:");
+        laCreatewAccUserLN.setStyle(UIStyle.labelStyle);
+
+        tfCreateAccUserLN = new TextField();
+
+        HBox hbNewAccLN = new HBox(10, laCreatewAccUserLN, tfCreateAccUserLN);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laCreateAccID = new Label("Account Number you prefer:");
+        laCreateAccID.setStyle(UIStyle.labelStyle);
+
+        tfCreateAccID = new TextField();
+
+        HBox hbNewAccID = new HBox(10, laCreateAccID, tfCreateAccID);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laCreateAccPwd = new Label("PASSWORD:");
+        laCreateAccPwd.setStyle(UIStyle.labelStyle);
+
+        pfCreateAccPwd = new PasswordField();
+
+        HBox hbNewAccPwd = new HBox(10,laCreateAccPwd,pfCreateAccPwd);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laCreateAccPwd2 = new Label("RE-ENTER Password:");
+        laCreateAccPwd2.setStyle(UIStyle.labelStyle);
+
+        pfCreateAccPwd2 = new PasswordField();
+
+        HBox hbNewAccPwd2 = new HBox(10, laCreateAccPwd2, pfCreateAccPwd2);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laCreateAccEmail = new Label("EMAIL ADDRESS:");
+        laCreateAccEmail.setStyle(UIStyle.labelStyle);
+
+        tfCreateAccEmail = new TextField();
+
+        HBox hbNewAccEmail = new HBox(10, laCreateAccEmail, tfCreateAccEmail);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Label laCreateAccBDay = new Label("BIRTHDAY DATE:");
+        laCreateAccBDay.setStyle(UIStyle.labelStyle);
+
+        dpCreateAccBDay = new DatePicker();
+
+        HBox hbNewAccBDay = new HBox(10, laCreateAccBDay, dpCreateAccBDay);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        taCreateAccMsg = new TextArea("");
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Button btnCreateAcc = new Button("Create Account");
+        btnCreateAcc.setOnAction(e -> cusController.handleCreateAccount( tfCreateAccID.getText(),
+                pfCreateAccPwd.getText(),
+                tfCreateAccUserFN.getText(),
+                tfCreateAccUserLN.getText(),
+                pfCreateAccPwd2.getText(),
+                tfCreateAccEmail.getText(),
+                dpCreateAccBDay.getValue()
+        ));
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        Button btnBack = new Button("Back to Login");
+        btnBack.setOnAction(this::buttonClicked);
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        vbCreateAccPage = new VBox(10, laDescription, hbNewAccFN, hbNewAccLN, hbNewAccID, hbNewAccPwd, hbNewAccPwd2, hbNewAccEmail, hbNewAccBDay, taCreateAccMsg, btnCreateAcc, btnBack);
+        vbCreateAccPage.setPrefWidth(COLUMN_WIDTH);
+        vbCreateAccPage.setAlignment(Pos.TOP_CENTER);
+        vbCreateAccPage.setStyle("-fx-padding: 15px;");
+
+        return vbCreateAccPage;
+    }
+
     /// --------------------------------------------------------------------------------------------------------------------------------------------------
 
     private HBox createMenuPage() {
@@ -371,6 +550,10 @@ public class CustomerView  {
         try{
             Button btn = (Button)event.getSource();
             String action = btn.getText();
+            if(action.equals("Create Account")) {
+                vbLoginPage.getChildren().clear();
+                vbLoginPage.getChildren().add(vbCreateAccPage);
+            }
             if(action.equals("More Info") && obrLvProducts.getSelectionModel().getSelectedItem()!=null) { // spelled the wrong button
                 showPage(vbInfoPage);
             }
@@ -384,10 +567,10 @@ public class CustomerView  {
                 showPage(vbHistoryPage);
             }
             if(action.equals("Add to Wish List") && obrLvProducts.getSelectionModel().getSelectedItem()!=null) {
-                showPage(vbWishListPage);
+                //showPage(vbWishListPage);
             }
             if(action.equals("Add to Trolley") && obrLvProducts.getSelectionModel().getSelectedItem()!=null){
-                showPage(vbTrolleyPage); //ensure trolleyPage shows if the last customer did not close their receiptPage
+                //showPage(vbTrolleyPage); //ensure trolleyPage shows if the last customer did not close their receiptPage
             }
             if(action.equals("OK & Close")){
                 showPage(vbInfoPage);
@@ -423,6 +606,12 @@ public class CustomerView  {
         laSearchSummary.setVisible(true);
         obeProductList.clear();
         obeProductList.addAll(productList);
+    }
+
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
+
+    public void showSearchPage() {
+        viewWindow.getScene().setRoot(vbRoot);
     }
 
     /// --------------------------------------------------------------------------------------------------------------------------------------------------
