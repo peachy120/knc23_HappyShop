@@ -26,7 +26,7 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-/***
+/**
  * The CustomerView is separated into two sections by a line :
  *
  * 1. Search Page – Always visible, allowing customers to browse and search for products.
