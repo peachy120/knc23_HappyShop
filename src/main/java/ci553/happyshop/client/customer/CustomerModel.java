@@ -23,6 +23,7 @@ import java.util.Map;
  */
 public class CustomerModel {
     public CustomerView cusView;
+    private CustomerUser currentUser;
     public DatabaseRW databaseRW; //Interface type, not specific implementation
                                   //Benefits: Flexibility: Easily change the database implementation.
 
@@ -42,6 +43,10 @@ public class CustomerModel {
     private String displayTaWishList = "";
     private String displayTaTrolley = "";                                // Text area content showing current trolley items (Trolley Page)
     private String displayTaReceipt = "";                                // Text area content showing receipt after checkout (Receipt Page)
+
+    public void setCurrentUser(CustomerUser user) {
+        this.currentUser = user;
+    }
 
     //SELECT productID, description, image, unitPrice,inStock quantity
     void search() throws SQLException {
@@ -192,6 +197,9 @@ public class CustomerModel {
                         ProductListFormatter.buildString(theOrder.getProductList())
                 );
                 System.out.println(displayTaReceipt);
+
+                currentUser.addPurchaseHistory(displayTaReceipt);
+                System.out.println("Added latest purchase to history");
             }
             else{ // Some products have insufficient stock — build an error message to inform the customer
                 StringBuilder errorMsg = new StringBuilder();
