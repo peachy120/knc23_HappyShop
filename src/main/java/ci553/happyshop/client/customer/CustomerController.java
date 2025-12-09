@@ -71,7 +71,7 @@ public class CustomerController {
                     boolean userAdded = cusUserManage.addUser(newUser);
 
                     if (userAdded) {
-                        cusView.vbLoginPage.getChildren().setAll(cusView.vbLoginPage);
+                        cusView.showLoginPage();
 
                         cusView.tfCreateAccID.setText("");
                         cusView.pfCreateAccPwd.setText("");

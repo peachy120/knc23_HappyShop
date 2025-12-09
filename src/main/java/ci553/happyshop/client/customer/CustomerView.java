@@ -72,10 +72,10 @@ public class CustomerView  {
     PasswordField pfAccPwd = new PasswordField();
     Label laLoginMsg = new Label();
 
-    TextField tfCreateAccID, tfCreateAccUserFN,  tfCreateAccUserLN, tfCreateAccEmail;
-    PasswordField pfCreateAccPwd, pfCreateAccPwd2;
-    DatePicker dpCreateAccBDay;
-    TextArea taCreateAccMsg;
+    TextField tfCreateAccID, tfCreateAccUserFN,  tfCreateAccUserLN, tfCreateAccEmail = new TextField();
+    PasswordField pfCreateAccPwd, pfCreateAccPwd2 = new PasswordField();
+    DatePicker dpCreateAccBDay = new DatePicker();
+    TextArea taCreateAccMsg = new TextArea();
 
     // Holds a reference to this CustomerView window for future access and management
     // (e.g., positioning the removeProductNotifier when needed).
@@ -551,8 +551,12 @@ public class CustomerView  {
             Button btn = (Button)event.getSource();
             String action = btn.getText();
             if(action.equals("Create Account")) {
-                vbLoginPage.getChildren().clear();
-                vbLoginPage.getChildren().add(vbCreateAccPage);
+                viewWindow.getScene().setRoot(vbCreateAccPage);
+//                vbLoginPage.getChildren().clear();
+//                vbLoginPage.getChildren().add(vbCreateAccPage);
+            }
+            if(action.equals("Back to Login")) {
+                showLoginPage();
             }
             if(action.equals("More Info") && obrLvProducts.getSelectionModel().getSelectedItem()!=null) { // spelled the wrong button
                 showPage(vbInfoPage);
@@ -571,6 +575,9 @@ public class CustomerView  {
             }
             if(action.equals("Add to Trolley") && obrLvProducts.getSelectionModel().getSelectedItem()!=null){
                 //showPage(vbTrolleyPage); //ensure trolleyPage shows if the last customer did not close their receiptPage
+            }
+            if(action.equals("Log Out")) {
+                showLoginPage();
             }
             if(action.equals("OK & Close")){
                 showPage(vbInfoPage);
@@ -612,6 +619,12 @@ public class CustomerView  {
 
     public void showSearchPage() {
         viewWindow.getScene().setRoot(vbRoot);
+    }
+
+    /// --------------------------------------------------------------------------------------------------------------------------------------------------
+
+    public void showLoginPage() {
+        viewWindow.getScene().setRoot(vbLoginPage);
     }
 
     /// --------------------------------------------------------------------------------------------------------------------------------------------------
