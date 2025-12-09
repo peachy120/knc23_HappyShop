@@ -552,8 +552,6 @@ public class CustomerView  {
             String action = btn.getText();
             if(action.equals("Create Account")) {
                 viewWindow.getScene().setRoot(vbCreateAccPage);
-//                vbLoginPage.getChildren().clear();
-//                vbLoginPage.getChildren().add(vbCreateAccPage);
             }
             if(action.equals("Back to Login")) {
                 showLoginPage();
