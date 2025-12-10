@@ -38,15 +38,20 @@ public class CustomerModel {
 
     // Four UI elements to be passed to CustomerView for display updates.
     private String imageName = "imageHolder.jpg";                // Image to show in product preview (Search Page)
-    private String displayLaSearchResult = "No Product was searched yet"; // Label showing search result message (Search Page)
+    public String displayLaSearchResult = "No Product was searched yet"; // Label showing search result message (Search Page)
     private String displayTaInfo = "";
-    private String displayTaWishList = "";
-    private String displayTaTrolley = "";                                // Text area content showing current trolley items (Trolley Page)
-    private String displayTaReceipt = "";                                // Text area content showing receipt after checkout (Receipt Page)
+    public String displayTaWishList = "";
+    public String displayTaTrolley = "";                                // Text area content showing current trolley items (Trolley Page)
+    public String displayTaReceipt = "";                                // Text area content showing receipt after checkout (Receipt Page)
 
     public void setCurrentUser(CustomerUser user) {
         this.currentUser = user;
     }
+
+    public CustomerUser getCurrentUser() {
+        return currentUser;
+    }
+
 
     //SELECT productID, description, image, unitPrice,inStock quantity
     void search() throws SQLException {
@@ -97,24 +102,24 @@ public class CustomerModel {
 
     /// --------------------------------------------------------------------------------------------------------------------------------------------------
 
-    void addToWishList() {
-        System.out.println("Add product to wishList is called from CustomerController"); // debugging comment
-        theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
-        if(theProduct!= null){
+//    void addToWishList() {
+//        System.out.println("Add product to wishList is called from CustomerController"); // debugging comment
+//        theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
+//        if(theProduct!= null){
+//
+//            makeOrganisedWishList();
+//
+//            displayTaWishList = ProductListFormatter.buildString(wishList); // build a String for trolley so that we can show it
+//        }
+//        else{
+//            displayLaSearchResult = "Please search for an available product before adding it to the wish list";
+//            System.out.println("must search and get an available product before add to wish list");
+//        }
+//        displayTaReceipt="";
+//        updateView();
+//    }
 
-            makeOrganisedWishList();
-
-            displayTaWishList = ProductListFormatter.buildString(wishList); // build a String for trolley so that we can show it
-        }
-        else{
-            displayLaSearchResult = "Please search for an available product before adding it to the wish list";
-            System.out.println("must search and get an available product before add to wish list");
-        }
-        displayTaReceipt="";
-        updateView();
-    }
-
-    void makeOrganisedWishList() {
+    void makeOrganisedWishList(Product theProduct, ArrayList<Product> wishList) {
         for ( Product product : wishList) {
             if ( product.getProductId().equals(theProduct.getProductId())) {
                 product.setOrderedQuantity(product.getOrderedQuantity() + theProduct.getOrderedQuantity());
@@ -128,6 +133,8 @@ public class CustomerModel {
                                         theProduct.getStockQuantity());
         wishList.add(newProduct);
         wishList.sort(Comparator.comparing(Product::getProductId));
+
+        System.out.println(newProduct + "ADDED");
     }
 
     /// --------------------------------------------------------------------------------------------------------------------------------------------------
@@ -296,5 +303,5 @@ public class CustomerModel {
     public ArrayList<Product> getTrolley() {
         return trolley;
     }
-    public ArrayList<Product> getWishList() { return wishList;}
+    public ArrayList<Product> getWishList() { return currentUser.getWishList();}
 }
