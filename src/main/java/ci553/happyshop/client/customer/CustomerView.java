@@ -63,7 +63,7 @@ public class CustomerView  {
     private ImageView ivProduct; //image area in searchPage ++ original code provided
     private Label lbProductInfo;//product text info in searchPage ++ original code provided
     private TextArea taInfo;
-    private TextArea taWishList;
+    public TextArea taWishList;
     private TextArea taTrolley; //in trolley Page
     public TextArea taHistory;
     private TextArea taReceipt;//in receipt page
@@ -255,6 +255,7 @@ public class CustomerView  {
         //--------------------------------------------------------------------------------------------------------------
 
         taCreateAccMsg = new TextArea("");
+        taCreateAccMsg.setEditable(false);
 
         //--------------------------------------------------------------------------------------------------------------
 
@@ -575,6 +576,12 @@ public class CustomerView  {
                 //showPage(vbTrolleyPage); //ensure trolleyPage shows if the last customer did not close their receiptPage
             }
             if(action.equals("Log Out")) {
+                tfSearch.setText("");
+                tfSearch.setPromptText("eg. 0001 / TV");
+                laSearchSummary.setText("Search Result");
+                obeProductList.clear();
+                obrLvProducts.getSelectionModel().clearSelection();
+                showPage(vbInfoPage);
                 showLoginPage();
             }
             if(action.equals("OK & Close")){

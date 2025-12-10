@@ -1,8 +1,12 @@
 package ci553.happyshop.client.customer;
 
+import ci553.happyshop.catalogue.Product;
+import ci553.happyshop.utility.ProductListFormatter;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerController {
@@ -19,6 +23,8 @@ public class CustomerController {
         this.cusModel = cusModel;
     }
 
+    /// ----------------------------------------------------------------------------------------------------------------
+
     public void login(String accountNumber, String password) {
         currentUser = cusUserManage.authenticate(accountNumber, password);
         if (currentUser != null) {
@@ -28,12 +34,22 @@ public class CustomerController {
             cusView.laLoginMsg.setText("");
             cusView.showSearchPage();
             System.out.println(currentUser.getAccountNumber() + " " + currentUser.getFirstName() + " " + currentUser.getLastName() + " Logged in");
+
+            ArrayList<Product> currentUserWishList = currentUser.getWishList();
+            StringBuilder wishListSB = new StringBuilder();
+            for (Product product : currentUserWishList) {
+                wishListSB.append(product.toString()).append("\n");
+            }
+            cusView.taWishList.setText(wishListSB.toString());
+
         } else {
             cusView.tfAccID.setText("");
             cusView.pfAccPwd.setText("");
             cusView.laLoginMsg.setText("Invalid login credentials!");
         }
     }
+
+    /// ----------------------------------------------------------------------------------------------------------------
 
     public void handleCreateAccount(String accountNumber, String password, String firstName, String lastName, String confirmPassword, String email, LocalDate birthDate) {
         existsAccount = cusUserManage.accountExists(accountNumber);
@@ -105,6 +121,38 @@ public class CustomerController {
         }
     }
 
+    /// ----------------------------------------------------------------------------------------------------------------
+
+    public void addToWishList() {
+        Product theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
+        CustomerUser currentUser = cusModel.getCurrentUser();
+
+        if(theProduct!= null){
+
+            ArrayList<Product> currentUserWishList = currentUser.getWishList();
+            cusModel.makeOrganisedWishList(theProduct, currentUserWishList);
+
+            cusModel.displayTaWishList = ProductListFormatter.buildString(cusModel.getWishList()); // build a String for trolley so that we can show it
+
+            System.out.println("Current WishList:");
+            for (Product product : currentUserWishList) {
+                System.out.println("- " + product);
+            }
+        }
+        else{
+            cusModel.displayLaSearchResult = "Please search for an available product before adding it to the wish list";
+            System.out.println("must search and get an available product before add to wish list");
+        }
+        cusModel.displayTaReceipt="";
+        cusModel.updateView();
+    }
+
+    /// ----------------------------------------------------------------------------------------------------------------
+
+
+
+    /// ----------------------------------------------------------------------------------------------------------------
+
     public void showHistory() {
         List<String> purchase = currentUser.getPurchaseHistory();
         if(purchase.isEmpty()) {
@@ -115,6 +163,8 @@ public class CustomerController {
             cusView.taHistory.setText(historyPurchase);
         }
     }
+
+    /// ----------------------------------------------------------------------------------------------------------------
 
     public void doAction(String action) throws SQLException, IOException {
         switch (action) {
@@ -136,8 +186,12 @@ public class CustomerController {
             case "My History":
                 showHistory();
                 break;
+            case "Log Out":
+                cusModel.setCurrentUser(null);
+                System.out.println("User successfully Logged out");
+                break;
             case "Add to Wish List":
-                cusModel.addToWishList();
+                addToWishList();
                 break;
             case "Add to Trolley":
                 cusModel.addToTrolley();
