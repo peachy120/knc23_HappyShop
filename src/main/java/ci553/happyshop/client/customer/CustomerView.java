@@ -64,7 +64,7 @@ public class CustomerView  {
     private Label lbProductInfo;//product text info in searchPage ++ original code provided
     private TextArea taInfo;
     public TextArea taWishList;
-    private TextArea taTrolley; //in trolley Page
+    public TextArea taTrolley; //in trolley Page
     public TextArea taHistory;
     private TextArea taReceipt;//in receipt page
 

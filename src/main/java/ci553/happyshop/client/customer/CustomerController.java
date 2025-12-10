@@ -42,6 +42,13 @@ public class CustomerController {
             }
             cusView.taWishList.setText(wishListSB.toString());
 
+            ArrayList<Product> currentUserTrolley = currentUser.getTrolley();
+            StringBuilder trolleySB = new StringBuilder();
+            for (Product product : currentUserTrolley) {
+                trolleySB.append(product.toString()).append("\n");
+            }
+            cusView.taTrolley.setText(trolleySB.toString());
+
         } else {
             cusView.tfAccID.setText("");
             cusView.pfAccPwd.setText("");
@@ -132,7 +139,7 @@ public class CustomerController {
             ArrayList<Product> currentUserWishList = currentUser.getWishList();
             cusModel.makeOrganisedWishList(theProduct, currentUserWishList);
 
-            cusModel.displayTaWishList = ProductListFormatter.buildString(cusModel.getWishList()); // build a String for trolley so that we can show it
+            cusModel.displayTaWishList = ProductListFormatter.buildString(currentUserWishList); // build a String for trolley so that we can show it
 
             System.out.println("Current WishList:");
             for (Product product : currentUserWishList) {
@@ -149,7 +156,35 @@ public class CustomerController {
 
     /// ----------------------------------------------------------------------------------------------------------------
 
+    void addToTrolley(){
+        Product theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
+        CustomerUser currentUser = cusModel.getCurrentUser();
+        if(theProduct!= null){
 
+            // trolley.add(theProduct) — Product is appended to the end of the trolley.
+            // To keep the trolley organized, add code here or call a method that:
+            //TODO
+            // 1. Merges items with the same product ID (combining their quantities).
+            // 2. Sorts the products in the trolley by product ID.
+
+            ArrayList<Product> currentUserTrolley = currentUser.getTrolley();
+            cusModel.makeOrganisedTrolley(theProduct, currentUserTrolley);
+
+            //trolley.add(theProduct); // original code provided
+            cusModel.displayTaTrolley = ProductListFormatter.buildString(currentUserTrolley); // build a String for trolley so that we can show it
+
+            System.out.println("Current Trolley:");
+            for (Product product : currentUserTrolley) {
+                System.out.println("- " + product);
+            }
+        }
+        else{
+            cusModel.displayLaSearchResult = "Please search for an available product before adding it to the trolley";
+            System.out.println("must search and get an available product before add to trolley");
+        }
+        cusModel.displayTaReceipt=""; // Clear receipt to switch back to trolleyPage (receipt shows only when not empty)
+        cusModel.updateView();
+    }
 
     /// ----------------------------------------------------------------------------------------------------------------
 
@@ -194,7 +229,7 @@ public class CustomerController {
                 addToWishList();
                 break;
             case "Add to Trolley":
-                cusModel.addToTrolley();
+                addToTrolley();
                 break;
             case "Cancel Trolley":
                 cusModel.trolleyCancel();
