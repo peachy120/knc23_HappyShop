@@ -139,31 +139,31 @@ public class CustomerModel {
 
     /// --------------------------------------------------------------------------------------------------------------------------------------------------
 
-    void addToTrolley(){
-        System.out.println("Add product to trolley is called from CustomerController"); // debugging comment
-        theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
-        if(theProduct!= null){
+//    void addToTrolley(){
+//        System.out.println("Add product to trolley is called from CustomerController"); // debugging comment
+//        theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
+//        if(theProduct!= null){
+//
+//            // trolley.add(theProduct) — Product is appended to the end of the trolley.
+//            // To keep the trolley organized, add code here or call a method that:
+//            //TODO
+//            // 1. Merges items with the same product ID (combining their quantities).
+//            // 2. Sorts the products in the trolley by product ID.
+//
+//            makeOrganisedTrolley();
+//
+//            //trolley.add(theProduct); // original code provided
+//            displayTaTrolley = ProductListFormatter.buildString(trolley); // build a String for trolley so that we can show it
+//        }
+//        else{
+//            displayLaSearchResult = "Please search for an available product before adding it to the trolley";
+//            System.out.println("must search and get an available product before add to trolley");
+//        }
+//        displayTaReceipt=""; // Clear receipt to switch back to trolleyPage (receipt shows only when not empty)
+//        updateView();
+//    }
 
-            // trolley.add(theProduct) — Product is appended to the end of the trolley.
-            // To keep the trolley organized, add code here or call a method that:
-            //TODO
-            // 1. Merges items with the same product ID (combining their quantities).
-            // 2. Sorts the products in the trolley by product ID.
-
-            makeOrganisedTrolley();
-
-            //trolley.add(theProduct); // original code provided
-            displayTaTrolley = ProductListFormatter.buildString(trolley); // build a String for trolley so that we can show it
-        }
-        else{
-            displayLaSearchResult = "Please search for an available product before adding it to the trolley";
-            System.out.println("must search and get an available product before add to trolley");
-        }
-        displayTaReceipt=""; // Clear receipt to switch back to trolleyPage (receipt shows only when not empty)
-        updateView();
-    }
-
-    void makeOrganisedTrolley() { // organised trolley : merging duplicate items
+    void makeOrganisedTrolley(Product theProduct, ArrayList<Product> trolley) { // organised trolley : merging duplicate items
         for ( Product product : trolley) {
             if ( product.getProductId().equals(theProduct.getProductId())) {
                 product.setOrderedQuantity(product.getOrderedQuantity() + theProduct.getOrderedQuantity());
@@ -177,11 +177,15 @@ public class CustomerModel {
                                             theProduct.getStockQuantity());
         trolley.add(newProduct);
         trolley.sort(Comparator.comparing(Product::getProductId)); // organised trolley : sorting items by productID
+
+        System.out.println(newProduct + "ADDED");
     }
 
     /// --------------------------------------------------------------------------------------------------------------------------------------------------
 
     void checkOut() throws IOException, SQLException {
+        ArrayList<Product> trolley = currentUser.getTrolley();
+
         if(!trolley.isEmpty()){
             // Group the products in the trolley by productId to optimize stock checking
             // Check the database for sufficient stock for all products in the trolley.
@@ -301,7 +305,7 @@ public class CustomerModel {
 
     //for test only
     public ArrayList<Product> getTrolley() {
-        return trolley;
+        return currentUser.getTrolley();
     }
     public ArrayList<Product> getWishList() { return currentUser.getWishList();}
 }
