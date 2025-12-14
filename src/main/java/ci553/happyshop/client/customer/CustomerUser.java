@@ -131,6 +131,7 @@ public class CustomerUser {
         System.out.println(productToWishList);
     }
 
+
     /// ----------------------------------------------------------------------------------------------------------------
 
     public void addToTrolley(Product productToTrolley) {

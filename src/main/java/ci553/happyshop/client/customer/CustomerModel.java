@@ -261,17 +261,21 @@ public class CustomerModel {
         return new ArrayList<>(grouped.values());
     }
 
+
     void trolleyCancel(){
-        trolley.clear();
-        displayTaTrolley="";
+        currentUser.getTrolley().clear();
+        displayTaTrolley = "";
         updateView();
     }
 
+    /// ----------------------------------------------------------------------------------------------------------------
+
     void wishListCancel() {
-        wishList.clear();
+        currentUser.getWishList().clear();
         displayTaWishList = "";
         updateView();
     }
+
     void closeReceipt(){
         displayTaReceipt="";
     }
