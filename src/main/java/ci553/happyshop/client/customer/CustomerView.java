@@ -445,11 +445,7 @@ public class CustomerView  {
         btnCancel.setOnAction(this::buttonClicked);
         btnCancel.setStyle(UIStyle.buttonStyle);
 
-        Button btnAddToTrolley = new Button("Add ALL to Trolley");
-        btnAddToTrolley.setOnAction(this::buttonClicked);
-        btnAddToTrolley.setStyle(UIStyle.buttonStyle);
-
-        HBox hbBtns = new HBox(10, btnCancel, btnAddToTrolley);
+        HBox hbBtns = new HBox(10, btnCancel);
         hbBtns.setStyle("-fx-padding: 15px;");
         hbBtns.setAlignment(Pos.CENTER);
 
@@ -483,7 +479,7 @@ public class CustomerView  {
         btnCheckout.setOnAction(this::buttonClicked);
         btnCheckout.setStyle(UIStyle.buttonStyle);
 
-        HBox hbBtns = new HBox(10, btnCancel,btnCheckout);
+        HBox hbBtns = new HBox(10, btnCancel, btnCheckout);
         hbBtns.setStyle("-fx-padding: 15px;");
         hbBtns.setAlignment(Pos.CENTER);
 

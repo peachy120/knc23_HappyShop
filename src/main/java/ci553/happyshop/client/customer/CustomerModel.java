@@ -274,6 +274,7 @@ public class CustomerModel {
         currentUser.getWishList().clear();
         displayTaWishList = "";
         updateView();
+        System.out.println("Current Wish List: " + currentUser.getWishList());
     }
 
     void closeReceipt(){
