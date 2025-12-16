@@ -97,7 +97,7 @@ public class CustomerView  {
         // Create a divider line
         Line line = new Line(0, 0, 0, HEIGHT);
         line.setStrokeWidth(4);
-        line.setStroke(Color.PINK);
+        line.setStroke(Color.BROWN);
         VBox lineContainer = new VBox(line);
         lineContainer.setPrefWidth(4); // Give it some space
         lineContainer.setAlignment(Pos.CENTER);
@@ -109,6 +109,9 @@ public class CustomerView  {
         vbRoot = new VBox(10,hbMenuPage, hbRoot);
         vbRoot.setAlignment(Pos.CENTER);
         vbRoot.setStyle(UIStyle.rootStyle);
+
+        vbLoginPage.setStyle(UIStyle.rootStyle);
+        vbCreateAccPage.setStyle(UIStyle.rootStyle);
 
         Scene scene = new Scene(vbLoginPage, WIDTH, HEIGHT);
         window.setTitle("🛒 HappyShop Customer Client");
@@ -268,11 +271,13 @@ public class CustomerView  {
                 tfCreateAccEmail.getText(),
                 dpCreateAccBDay.getValue()
         ));
+        btnCreateAcc.setStyle(UIStyle.buttonStyle);
 
         //--------------------------------------------------------------------------------------------------------------
 
         Button btnBack = new Button("Back to Login");
         btnBack.setOnAction(this::buttonClicked);
+        btnBack.setStyle(UIStyle.buttonStyle);
 
         //--------------------------------------------------------------------------------------------------------------
 
@@ -400,7 +405,7 @@ public class CustomerView  {
         VBox vbSearchPage = new VBox(15, laPageTitle, hbSearch, laSearchSummary, obrLvProducts, hbBtns);
         vbSearchPage.setPrefWidth(COLUMN_WIDTH);
         vbSearchPage.setAlignment(Pos.TOP_CENTER);
-        vbSearchPage.setStyle("-fx-padding: 15px;");
+        vbSearchPage.setStyle("-fx-padding: 5px;");
 
         return vbSearchPage;
     }
