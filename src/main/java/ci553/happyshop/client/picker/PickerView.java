@@ -9,6 +9,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import javax.sound.sampled.*;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -106,6 +108,7 @@ public class PickerView  {
             // Based on the button's text, performs the appropriate action and switches the displayed root.
             switch (btnText) {
                 case "Progressing":
+                    playOrderCollectAudio("audioes/orderCollectAudio.wav");
                     scene.setRoot(vbOrderDetailRoot); // switch to OrderDetailRoot
                     pickerController.doProgressing();
                     break;
@@ -124,5 +127,23 @@ public class PickerView  {
         taOrderMap.setText(strOrderMap);
         taOrderDetail.setText(strOrderDetail);
         laDetailRootTitle.setText("Progressing Order Details");
+    }
+
+
+    public void playOrderCollectAudio(String orderCollectAudio) {
+        try {
+            File orderCollectAudioFile = new File(orderCollectAudio);
+            AudioInputStream orderCollectAudioStream = AudioSystem.getAudioInputStream(orderCollectAudioFile);
+
+            Clip orderCollectAudioClip = AudioSystem.getClip();
+            orderCollectAudioClip.open(orderCollectAudioStream);
+            orderCollectAudioClip.start();
+        } catch (UnsupportedAudioFileException e) {
+            System.out.println("Unsupported audio file: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO error: " + e.getMessage());
+        } catch (LineUnavailableException e) {
+            System.out.println("Audio line unavailable: " + e.getMessage());
+        }
     }
 }

@@ -5,6 +5,8 @@ import ci553.happyshop.utility.StorageLocation;
 import ci553.happyshop.utility.UIStyle;
 import ci553.happyshop.utility.WinPosManager;
 import ci553.happyshop.utility.WindowBounds;
+
+import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,8 +20,10 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
-import jdk.incubator.vector.VectorOperators;
 
+import javax.sound.sampled.*;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,7 +38,7 @@ import java.util.ArrayList;
  *    depending on the current context. Only one of these is shown at a time.
  */
 
-public class CustomerView  {
+public class CustomerView extends Application {
     public CustomerController cusController;
 
     private final int WIDTH = UIStyle.customerWinWidth;
@@ -113,21 +117,21 @@ public class CustomerView  {
         vbLoginPage.setStyle(UIStyle.rootStyle);
         vbCreateAccPage.setStyle(UIStyle.rootStyle);
 
+        //playWelcomeLoginAudio("audioes/welcomeAudio.wav");
+
         Scene scene = new Scene(vbLoginPage, WIDTH, HEIGHT);
         window.setTitle("🛒 HappyShop Customer Client");
         WinPosManager.registerWindow(window,WIDTH,HEIGHT); //calculate position x and y for this window
         window.setScene(scene);
         window.show();
         viewWindow=window;// Sets viewWindow to this window for future reference and management.
-//        viewWindow.setTitle("🛒 HappyShop Customer Client");
-//        WinPosManager.registerWindow(viewWindow,WIDTH,HEIGHT); //calculate position x and y for this window
-//        viewWindow.setScene(scene);
-//        viewWindow.show();
     }
 
     /// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     private VBox CreateLoginPage() {
+        playWelcomeLoginAudio("audioes/welcomeAudio.wav");
+
         Label laWelcome = new Label("Welcome to HappyShop");
         laWelcome.setStyle(UIStyle.labelTitleStyle);
 
@@ -571,10 +575,13 @@ public class CustomerView  {
                 showPage(vbHistoryPage);
             }
             if(action.equals("Add to Wish List") && obrLvProducts.getSelectionModel().getSelectedItem()!=null) {
-                //showPage(vbWishListPage);
+                playAddToWishListAudio("audioes/addToWishListAudio.wav");
             }
             if(action.equals("Add to Trolley") && obrLvProducts.getSelectionModel().getSelectedItem()!=null){
-                //showPage(vbTrolleyPage); //ensure trolleyPage shows if the last customer did not close their receiptPage
+                playAddToTrolleyAudio("audioes/addToTrolleyAudio.wav");
+            }
+            if(action.equals("Check Out")) {
+                playOrderReceiveAudio("audioes/orderReceiveAudio.wav");
             }
             if(action.equals("Log Out")) {
                 tfSearch.setText("");
@@ -584,6 +591,9 @@ public class CustomerView  {
                 obrLvProducts.getSelectionModel().clearSelection();
                 showPage(vbInfoPage);
                 showLoginPage();
+
+                playThankyouAudio("audioes/thankyouAudio.wav");
+
             }
             if(action.equals("OK & Close")){
                 showPage(vbInfoPage);
@@ -648,6 +658,92 @@ public class CustomerView  {
         return new WindowBounds(viewWindow.getX(), viewWindow.getY(),
                   viewWindow.getWidth(), viewWindow.getHeight());
     }
+
+    public void playWelcomeLoginAudio(String welcomeLoginAudio) {
+        try {
+            File welcomeLoginAudioFile = new File(welcomeLoginAudio);
+            AudioInputStream welcomeLoginAudioStream = AudioSystem.getAudioInputStream(welcomeLoginAudioFile);
+
+            Clip welcomeLoginAudioClip = AudioSystem.getClip();
+            welcomeLoginAudioClip.open(welcomeLoginAudioStream);
+            welcomeLoginAudioClip.start();
+        } catch (UnsupportedAudioFileException e) {
+            System.out.println("Unsupported audio file: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO error: " + e.getMessage());
+        } catch (LineUnavailableException e) {
+            System.out.println("Audio line unavailable: " + e.getMessage());
+        }
+    }
+
+    public void playAddToWishListAudio(String addToWishListAudio) {
+        try {
+            File addToWishListAudioFile = new File(addToWishListAudio);
+            AudioInputStream addToWishListAudioStream = AudioSystem.getAudioInputStream(addToWishListAudioFile);
+
+            Clip addToWishListAudioClip = AudioSystem.getClip();
+            addToWishListAudioClip.open(addToWishListAudioStream);
+            addToWishListAudioClip.start();
+        } catch (UnsupportedAudioFileException e) {
+            System.out.println("Unsupported audio file: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO error: " + e.getMessage());
+        } catch (LineUnavailableException e) {
+            System.out.println("Audio line unavailable: " + e.getMessage());
+        }
+    }
+
+    public void playAddToTrolleyAudio(String addToTrolleyAudio) {
+        try {
+            File addToTrolleyAudioFile = new File(addToTrolleyAudio);
+            AudioInputStream addToTrolleyAudioStream = AudioSystem.getAudioInputStream(addToTrolleyAudioFile);
+
+            Clip addToTrolleyAudioClip = AudioSystem.getClip();
+            addToTrolleyAudioClip.open(addToTrolleyAudioStream);
+            addToTrolleyAudioClip.start();
+        } catch (UnsupportedAudioFileException e) {
+            System.out.println("Unsupported audio file: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO error: " + e.getMessage());
+        } catch (LineUnavailableException e) {
+            System.out.println("Audio line unavailable: " + e.getMessage());
+        }
+    }
+
+    public void playOrderReceiveAudio(String orderReceiveAudio) {
+        try {
+            File orderReceiveAudioFile = new File(orderReceiveAudio);
+            AudioInputStream orderReceiveAudioStream = AudioSystem.getAudioInputStream(orderReceiveAudioFile);
+
+            Clip orderReceiveAudioClip = AudioSystem.getClip();
+            orderReceiveAudioClip.open(orderReceiveAudioStream);
+            orderReceiveAudioClip.start();
+        } catch (UnsupportedAudioFileException e) {
+            System.out.println("Unsupported audio file: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO error: " + e.getMessage());
+        } catch (LineUnavailableException e) {
+            System.out.println("Audio line unavailable: " + e.getMessage());
+        }
+    }
+
+    public void playThankyouAudio(String thankyouAudio) {
+        try {
+            File thankyouAudioFile = new File(thankyouAudio);
+            AudioInputStream thankyouAudioStream = AudioSystem.getAudioInputStream(thankyouAudioFile);
+
+            Clip thankyouAudioClip = AudioSystem.getClip();
+            thankyouAudioClip.open(thankyouAudioStream);
+            thankyouAudioClip.start();
+        } catch (UnsupportedAudioFileException e) {
+            System.out.println("Unsupported audio file: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO error: " + e.getMessage());
+        } catch (LineUnavailableException e) {
+            System.out.println("Audio line unavailable: " + e.getMessage());
+        }
+    }
+
 }
 
 /// --------------------------------------------------------------------------------------------------------------------------------------------------
