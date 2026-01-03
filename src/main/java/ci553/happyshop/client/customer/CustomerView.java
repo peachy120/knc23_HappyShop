@@ -117,8 +117,6 @@ public class CustomerView extends Application {
         vbLoginPage.setStyle(UIStyle.rootStyle);
         vbCreateAccPage.setStyle(UIStyle.rootStyle);
 
-        //playWelcomeLoginAudio("audioes/welcomeAudio.wav");
-
         Scene scene = new Scene(vbLoginPage, WIDTH, HEIGHT);
         window.setTitle("🛒 HappyShop Customer Client");
         WinPosManager.registerWindow(window,WIDTH,HEIGHT); //calculate position x and y for this window
@@ -133,7 +131,7 @@ public class CustomerView extends Application {
         playWelcomeLoginAudio("audioes/welcomeAudio.wav");
 
         Label laWelcome = new Label("Welcome to HappyShop");
-        laWelcome.setStyle(UIStyle.labelTitleStyle);
+        laWelcome.setStyle(UIStyle.largerLabelTitleStyle);
 
         //--------------------------------------------------------------------------------------------------------------
 
@@ -148,6 +146,7 @@ public class CustomerView extends Application {
         tfAccID = new TextField();
 
         HBox hbAccID = new HBox(10,laAccID, tfAccID);
+        hbAccID.setAlignment(Pos.CENTER);
 
         //--------------------------------------------------------------------------------------------------------------
 
@@ -157,6 +156,7 @@ public class CustomerView extends Application {
         pfAccPwd = new PasswordField();
 
         HBox hbAccPwd = new HBox(10,laAccPwd,pfAccPwd);
+        hbAccPwd.setAlignment(Pos.CENTER);
 
         //--------------------------------------------------------------------------------------------------------------
 
@@ -179,6 +179,7 @@ public class CustomerView extends Application {
         btnCreateAcc.setOnAction(this::buttonClicked);
 
         HBox hbCreateAcc = new HBox(10, laCreateAcc, btnCreateAcc);
+        hbCreateAcc.setAlignment(Pos.CENTER);
 
         //--------------------------------------------------------------------------------------------------------------
 
@@ -193,76 +194,88 @@ public class CustomerView extends Application {
     /// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     private VBox CreateAccountPage() {
-        Label laDescription = new Label("Create a Account,Fill in the following");
-        laDescription.setStyle(UIStyle.labelStyle);
+        Label laDescription = new Label("To create an Account, Fill in below");
+        laDescription.setStyle(UIStyle.largerLabelTitleStyle);
 
         //--------------------------------------------------------------------------------------------------------------
 
         Label laCreateAccUserFN = new Label("FIRST NAME:");
-        laCreateAccUserFN.setStyle(UIStyle.labelStyle);
+        laCreateAccUserFN.setStyle(UIStyle.labelTitleStyle);
 
         tfCreateAccUserFN = new TextField();
 
         HBox hbNewAccFN = new HBox(10,laCreateAccUserFN, tfCreateAccUserFN);
+        hbNewAccFN.setAlignment(Pos.CENTER);
 
         //--------------------------------------------------------------------------------------------------------------
 
         Label laCreatewAccUserLN = new Label("LAST NAME:");
-        laCreatewAccUserLN.setStyle(UIStyle.labelStyle);
+        laCreatewAccUserLN.setStyle(UIStyle.labelTitleStyle);
 
         tfCreateAccUserLN = new TextField();
 
         HBox hbNewAccLN = new HBox(10, laCreatewAccUserLN, tfCreateAccUserLN);
+        hbNewAccLN.setAlignment(Pos.CENTER);
 
         //--------------------------------------------------------------------------------------------------------------
 
-        Label laCreateAccID = new Label("Account Number you prefer:");
-        laCreateAccID.setStyle(UIStyle.labelStyle);
+        Label laCreateAccID = new Label("Account ID of your choice:");
+        laCreateAccID.setStyle(UIStyle.labelTitleStyle);
 
         tfCreateAccID = new TextField();
 
         HBox hbNewAccID = new HBox(10, laCreateAccID, tfCreateAccID);
+        hbNewAccID.setAlignment(Pos.CENTER);
 
         //--------------------------------------------------------------------------------------------------------------
 
         Label laCreateAccPwd = new Label("PASSWORD:");
-        laCreateAccPwd.setStyle(UIStyle.labelStyle);
+        laCreateAccPwd.setStyle(UIStyle.labelTitleStyle);
 
         pfCreateAccPwd = new PasswordField();
 
         HBox hbNewAccPwd = new HBox(10,laCreateAccPwd,pfCreateAccPwd);
+        hbNewAccPwd.setAlignment(Pos.CENTER);
 
         //--------------------------------------------------------------------------------------------------------------
 
         Label laCreateAccPwd2 = new Label("RE-ENTER Password:");
-        laCreateAccPwd2.setStyle(UIStyle.labelStyle);
+        laCreateAccPwd2.setStyle(UIStyle.labelTitleStyle);
 
         pfCreateAccPwd2 = new PasswordField();
 
         HBox hbNewAccPwd2 = new HBox(10, laCreateAccPwd2, pfCreateAccPwd2);
+        hbNewAccPwd2.setAlignment(Pos.CENTER);
 
         //--------------------------------------------------------------------------------------------------------------
 
         Label laCreateAccEmail = new Label("EMAIL ADDRESS:");
-        laCreateAccEmail.setStyle(UIStyle.labelStyle);
+        laCreateAccEmail.setStyle(UIStyle.labelTitleStyle);
 
         tfCreateAccEmail = new TextField();
 
         HBox hbNewAccEmail = new HBox(10, laCreateAccEmail, tfCreateAccEmail);
+        hbNewAccEmail.setAlignment(Pos.CENTER);
 
         //--------------------------------------------------------------------------------------------------------------
 
         Label laCreateAccBDay = new Label("BIRTHDAY DATE:");
-        laCreateAccBDay.setStyle(UIStyle.labelStyle);
+        laCreateAccBDay.setStyle(UIStyle.labelTitleStyle);
 
         dpCreateAccBDay = new DatePicker();
 
         HBox hbNewAccBDay = new HBox(10, laCreateAccBDay, dpCreateAccBDay);
+        hbNewAccBDay.setAlignment(Pos.CENTER);
 
         //--------------------------------------------------------------------------------------------------------------
 
         taCreateAccMsg = new TextArea("");
         taCreateAccMsg.setEditable(false);
+        taCreateAccMsg.setPrefWidth(500);
+        taCreateAccMsg.setPrefHeight(150);
+        taCreateAccMsg.setMaxWidth(500);
+        taCreateAccMsg.setMaxHeight(150);
+        VBox.setVgrow(taCreateAccMsg, Priority.NEVER);
 
         //--------------------------------------------------------------------------------------------------------------
 
@@ -275,13 +288,13 @@ public class CustomerView extends Application {
                 tfCreateAccEmail.getText(),
                 dpCreateAccBDay.getValue()
         ));
-        btnCreateAcc.setStyle(UIStyle.buttonStyle);
+        btnCreateAcc.setStyle(UIStyle.menuButtonStyle);
 
         //--------------------------------------------------------------------------------------------------------------
 
         Button btnBack = new Button("Back to Login");
         btnBack.setOnAction(this::buttonClicked);
-        btnBack.setStyle(UIStyle.buttonStyle);
+        btnBack.setStyle(UIStyle.menuButtonStyle);
 
         //--------------------------------------------------------------------------------------------------------------
 
@@ -297,22 +310,22 @@ public class CustomerView extends Application {
 
     private HBox createMenuPage() {
         Label laShopName = new Label("HappyShop");
-        laShopName.setStyle(UIStyle.labelTitleStyle);
+        laShopName.setStyle(UIStyle.largerLabelTitleStyle);
 
         Button btnWishList = new Button("My Wish List");
-        btnWishList.setStyle(UIStyle.buttonStyle);
+        btnWishList.setStyle(UIStyle.menuButtonStyle);
         btnWishList.setOnAction(this::buttonClicked);
 
         Button btnTrolley = new Button("My Trolley");
-        btnTrolley.setStyle(UIStyle.buttonStyle);
+        btnTrolley.setStyle(UIStyle.menuButtonStyle);
         btnTrolley.setOnAction(this::buttonClicked);
 
         Button btnHistory = new Button("My History");
-        btnHistory.setStyle(UIStyle.buttonStyle);
+        btnHistory.setStyle(UIStyle.menuButtonStyle);
         btnHistory.setOnAction(this::buttonClicked);
 
         Button btnLogOut = new Button("Log Out");
-        btnLogOut.setStyle(UIStyle.buttonStyle);
+        btnLogOut.setStyle(UIStyle.menuButtonStyle);
         btnLogOut.setOnAction(this::buttonClicked);
 
         HBox hbMenuPage = new HBox(10, laShopName, btnWishList, btnTrolley, btnHistory, btnLogOut);
@@ -343,6 +356,7 @@ public class CustomerView extends Application {
         btnSearch.setOnAction(this::buttonClicked);
 
         HBox hbSearch = new HBox(10, laSearch, tfSearch, btnSearch);
+        hbSearch.setAlignment(Pos.CENTER);
 
         //--------------------------------------------------------------------------------------------------------------
 
@@ -353,7 +367,9 @@ public class CustomerView extends Application {
 
         obeProductList = FXCollections.observableArrayList();
         obrLvProducts = new ListView<>(obeProductList);//ListView proListView observes proList
-        obrLvProducts.setPrefHeight(HEIGHT - 100);
+        obrLvProducts.setPrefHeight(200);
+        obrLvProducts.setMaxHeight(200);
+        VBox.setVgrow(obrLvProducts, Priority.NEVER);
         obrLvProducts.setFixedCellSize(50);
         obrLvProducts.setStyle(UIStyle.listViewStyle);
 
@@ -402,6 +418,7 @@ public class CustomerView extends Application {
         btnAddToTrolley.setOnAction(this::buttonClicked);
 
         HBox hbBtns = new HBox(10, btnMoreInfo, btnAddToWishList, btnAddToTrolley);
+        hbBtns.setAlignment(Pos.CENTER);
 
 
         //--------------------------------------------------------------------------------------------------------------
@@ -424,7 +441,10 @@ public class CustomerView extends Application {
 
         taInfo = new TextArea();
         taInfo.setEditable(false);
-        taInfo.setPrefSize(WIDTH/2, HEIGHT-50);
+        taInfo.setPrefHeight(200);
+        taInfo.setMaxHeight(300);
+        VBox.setVgrow(taInfo, Priority.NEVER);
+
 
         //--------------------------------------------------------------------------------------------------------------
 
@@ -432,6 +452,8 @@ public class CustomerView extends Application {
         vbInfoPage.setPrefWidth(COLUMN_WIDTH);
         vbInfoPage.setAlignment(Pos.TOP_CENTER);
         vbInfoPage.setStyle("-fx-padding: 15px;");
+
+        HBox.setHgrow(vbInfoPage, Priority.ALWAYS);
 
         return vbInfoPage;
     }
@@ -446,7 +468,9 @@ public class CustomerView extends Application {
 
         taWishList = new TextArea();
         taWishList.setEditable(false);
-        taWishList.setPrefSize(WIDTH/2, HEIGHT-50);
+        taWishList.setPrefHeight(300);
+        taWishList.setMaxHeight(300);
+        VBox.setVgrow(taWishList, Priority.NEVER);
 
         //--------------------------------------------------------------------------------------------------------------
 
@@ -465,6 +489,8 @@ public class CustomerView extends Application {
         vbWishListPage.setAlignment(Pos.TOP_CENTER);
         vbWishListPage.setStyle("-fx-padding: 15px;");
 
+        HBox.setHgrow(vbWishListPage, Priority.ALWAYS);
+
         return vbWishListPage;
     }
 
@@ -478,7 +504,9 @@ public class CustomerView extends Application {
 
         taTrolley = new TextArea();
         taTrolley.setEditable(false);
-        taTrolley.setPrefSize(WIDTH/2, HEIGHT-50);
+        taTrolley.setPrefHeight(300);
+        taTrolley.setMaxHeight(300);
+        VBox.setVgrow(taTrolley, Priority.NEVER);
 
         Button btnCancel = new Button("Cancel Trolley");
         btnCancel.setOnAction(this::buttonClicked);
@@ -499,6 +527,8 @@ public class CustomerView extends Application {
         vbTrolleyPage.setAlignment(Pos.TOP_CENTER);
         vbTrolleyPage.setStyle("-fx-padding: 15px;");
 
+        HBox.setHgrow(vbTrolleyPage, Priority.ALWAYS);
+
         return vbTrolleyPage;
     }
 
@@ -512,7 +542,9 @@ public class CustomerView extends Application {
 
         taHistory = new TextArea();
         taHistory.setEditable(false);
-        taHistory.setPrefSize(WIDTH/2, HEIGHT-50);
+        taHistory.setPrefHeight(300);
+        taHistory.setMaxHeight(400);
+        VBox.setVgrow(taHistory, Priority.NEVER);
 
         //--------------------------------------------------------------------------------------------------------------
 
@@ -520,6 +552,8 @@ public class CustomerView extends Application {
         vbHistoryPage.setPrefWidth(COLUMN_WIDTH);
         vbHistoryPage.setAlignment(Pos.TOP_CENTER);
         vbHistoryPage.setStyle("-fx-padding: 15px;");
+
+        HBox.setHgrow(vbHistoryPage, Priority.ALWAYS);
 
         return vbHistoryPage;
     }
@@ -545,6 +579,8 @@ public class CustomerView extends Application {
         vbReceiptPage.setPrefWidth(COLUMN_WIDTH);
         vbReceiptPage.setAlignment(Pos.TOP_CENTER);
         vbReceiptPage.setStyle(UIStyle.rootStyleYellow);
+
+        HBox.setHgrow(vbReceiptPage, Priority.ALWAYS);
 
         return vbReceiptPage;
     }
@@ -667,6 +703,40 @@ public class CustomerView extends Application {
             Clip welcomeLoginAudioClip = AudioSystem.getClip();
             welcomeLoginAudioClip.open(welcomeLoginAudioStream);
             welcomeLoginAudioClip.start();
+        } catch (UnsupportedAudioFileException e) {
+            System.out.println("Unsupported audio file: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO error: " + e.getMessage());
+        } catch (LineUnavailableException e) {
+            System.out.println("Audio line unavailable: " + e.getMessage());
+        }
+    }
+
+    public void playLoginSuccessAudio(String loginAudio) {
+        try {
+            File loginAudioFile = new File(loginAudio);
+            AudioInputStream loginAudioStream = AudioSystem.getAudioInputStream(loginAudioFile);
+
+            Clip loginAudioClip = AudioSystem.getClip();
+            loginAudioClip.open(loginAudioStream);
+            loginAudioClip.start();
+        } catch (UnsupportedAudioFileException e) {
+            System.out.println("Unsupported audio file: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO error: " + e.getMessage());
+        } catch (LineUnavailableException e) {
+            System.out.println("Audio line unavailable: " + e.getMessage());
+        }
+    }
+
+    public void playAccCreatedAudio(String accCreatedAudio) {
+        try {
+            File accCreatedAudioFile = new File(accCreatedAudio);
+            AudioInputStream accCreatedAudioStream = AudioSystem.getAudioInputStream(accCreatedAudioFile);
+
+            Clip accCreatedAudioClip = AudioSystem.getClip();
+            accCreatedAudioClip.open(accCreatedAudioStream);
+            accCreatedAudioClip.start();
         } catch (UnsupportedAudioFileException e) {
             System.out.println("Unsupported audio file: " + e.getMessage());
         } catch (IOException e) {
