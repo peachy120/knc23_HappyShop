@@ -34,8 +34,8 @@ public final class UIStyle {
         throw new UnsupportedOperationException("UIStyle is a utility class");
     }
 
-    public static final int customerWinWidth = 610;
-    public static final int customerWinHeight = 300;
+    public static final int customerWinWidth = 775;
+    public static final int customerWinHeight = 400;
     public static final int removeProNotifierWinWidth = customerWinWidth / 2 + 160;
     public static final int removeProNotifierWinHeight = 230;
 
@@ -58,6 +58,9 @@ public final class UIStyle {
     public static final String labelTitleStyle = "-fx-font-weight: bold; " +
             "-fx-font-size: 16px; -fx-text-fill: #570000;";
 
+    public static final String largerLabelTitleStyle = "-fx-font-weight: bold; " +
+            "-fx-font-size: 20px; -fx-text-fill: #570000;";
+
     public static final String labelStyle = "-fx-font-weight: bold; " +
             "-fx-font-size: 14px; " +
             "-fx-text-fill: #570000; ";
@@ -68,7 +71,13 @@ public final class UIStyle {
     public static final String comboBoxStyle = "-fx-font-weight: bold; " +
             "-fx-font-size: 14px;";
 
-    public static final String buttonStyle = "-fx-font-size: 15; " +
+    public static final String buttonStyle = "-fx-font-size: 12; " +
+            "-fx-font-weight: bold; " +
+            "-fx-text-fill: #FFFFFF; " +
+            "-fx-background-radius: 5em; " +
+            "-fx-background-color: #B10f2E; ";
+
+    public static final String menuButtonStyle = "-fx-font-size: 16; " +
             "-fx-font-weight: bold; " +
             "-fx-text-fill: #FFFFFF; " +
             "-fx-background-radius: 5em; " +

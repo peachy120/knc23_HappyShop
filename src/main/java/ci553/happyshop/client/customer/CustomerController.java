@@ -31,7 +31,7 @@ public class CustomerController {
             cusModel.setCurrentUser(currentUser);
             cusView.tfAccID.setText("");
             cusView.pfAccPwd.setText("");
-            cusView.laLoginMsg.setText("");
+            cusView.playLoginSuccessAudio("audioes/loginSuccessfullyAudio.wav");
             cusView.showSearchPage();
             System.out.println(currentUser.getAccountNumber() + " " + currentUser.getFirstName() + " " + currentUser.getLastName() + " Logged in");
 
@@ -96,7 +96,8 @@ public class CustomerController {
                     boolean userAdded = cusUserManage.addUser(newUser);
 
                     if (userAdded) {
-                        cusView.showLoginPage();
+                        cusView.playAccCreatedAudio("audioes/accountCreatedSuccessfullyAudio.wav");
+                        //cusView.showLoginPage();
 
                         cusView.tfCreateAccID.setText("");
                         cusView.pfCreateAccPwd.setText("");
@@ -107,6 +108,13 @@ public class CustomerController {
                         cusView.dpCreateAccBDay.setValue(LocalDate.now());
 
                         System.out.println("Account Created\n" +
+                                "Account Number : " + accountNumber + "\n" +
+                                "Password : " + password + "\n" +
+                                "First Name : " + firstName + " " + "Last Name : " + lastName + "\n" +
+                                "Email : " + email + "\n" +
+                                "Date Of Birth : " + birthDate);
+
+                        cusView.taCreateAccMsg.setText("Account Created\n" +
                                 "Account Number : " + accountNumber + "\n" +
                                 "Password : " + password + "\n" +
                                 "First Name : " + firstName + " " + "Last Name : " + lastName + "\n" +
